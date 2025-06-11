@@ -1,10 +1,9 @@
-// components/LoginForm.tsx
 "use client";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { fetchRandomUser } from "@/lib/api/submitUser";
-import Input from "./Input";
-import Button from "./Button";
+import {Input} from "../Input/Input";
+import {Button} from "../Button/Button";
 
 export default function LoginForm() {
 	const { register, handleSubmit } = useForm<{ phone: string }>();
