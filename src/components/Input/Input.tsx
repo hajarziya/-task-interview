@@ -11,7 +11,7 @@ export function Input({ label, register, ...rest }: Props) {
 	return (
 		<div className={styles.inputWrapper}>
 			{label && <label>{label}</label>}
-			<input {...register} {...rest} />
+			<input className={styles.input} {...register} {...rest} />
 		</div>
 	);
 }

@@ -1,34 +1,32 @@
 "use client";
+
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import { fetchRandomUser } from "@/lib/api/submitUser";
-import {Input} from "../Input/Input";
-import {Button} from "../Button/Button";
+import { Input } from "@/components";
+import { Button } from "@/components";
+import { isValidIranianPhone } from "@/lib";
+import styles from "./LoginForm.module.scss";
+import { useAuth } from "./useAuth";
 
 export default function LoginForm() {
-	const { register, handleSubmit } = useForm<{ phone: string }>();
-	const router = useRouter();
+  const { register, handleSubmit } = useForm<{ phone: string }>();
 
-	async function onSubmit() {
-		const user = await fetchRandomUser();
-		localStorage.setItem("user", JSON.stringify(user));
-		router.push("/dashboard");
-	}
+  const { isLoading, error, submit } = useAuth();
 
-	return (
-		<form onSubmit={handleSubmit(onSubmit)}>
-			<Input
-				{...register("phone", {
-					required: "Phone is required",
-					pattern: {
-						value: /^(\+98|0)?9\d{9}$/,
-						message: "Invalid Iranian phone number",
-					},
-				})}
-				type="tel"
-				placeholder="شماره موبایل"
-			/>
-			<Button type="submit">ورود</Button>
-		</form>
-	);
+  return (
+    <form className={styles.form} onSubmit={handleSubmit(submit)}>
+      <Input
+        {...register("phone", {
+          required: "Phone is required",
+          validate: (value) =>
+            isValidIranianPhone(value) || "Invalid Iranian phone number",
+        })}
+        type="tel"
+        placeholder="شماره موبایل"
+      />
+      <Button disabled={isLoading} type="submit">
+        {isLoading ? "در حال بررسی..." : "ورود"}
+      </Button>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+    </form>
+  );
 }
